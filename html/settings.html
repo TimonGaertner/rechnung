@@ -11,12 +11,20 @@
         <link rel="stylesheet" href="../style/index.css" />
     </head>
     <body>
-        <a href="settings.html" id="settings">Settings</a>
-        <a href="create_bill.html" class="select">Create bill</a>
-        <a href="bill_payed.html" class="select">Add a bill to your earnings</a>
-        <a href="add_cost.html" class="select">Add a cost</a>
+        <form action="">
+            <label for="logo">Logo</label>
+            <input type="file" id="logo" name="logo" />
+        </form>
         <!-- <script src="../node_modules/jquery/dist/jquery.js"></script> -->
         <script>
+            const sqlite = require("sqlite3");
+            var db = new sqlite.Database("db.db");
+
+            db.run("CREATE TABLE lorem (a TEXT)");
+            // db.run("INSERT INTO lorem VALUES ('ipsum')", "a");
+            // console.log("readAllRows lorem");
+            // console.log(db.all("SELECT * FROM lorem"));
+            // db.close();
         </script>
     </body>
 </html>

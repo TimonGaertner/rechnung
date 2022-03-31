@@ -30,9 +30,3 @@ app.whenReady().then(() => {
     });
 });
 
-var pdf = require("html-pdf");
-var options = { format: "Letter" };
-
-ipc.on("print-to-pdf", function (event) {
-    app.quit();
-});
