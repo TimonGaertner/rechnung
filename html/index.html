@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="Content-Security-Policy" />
+        <meta
+            http-equiv="X-Content-Security-Policy"
+            content="default-src 'self'; script-src 'self'"
+        />
+        <title>Rechnung</title>
+        <link rel="stylesheet" href="../style/index.css" />
+    </head>
+    <body>
+        <a href="settings.html" id="settings">Settings</a>
+        <a href="create_bill.html" class="select">Create bill</a>
+        <a href="bill_payed.html" class="select">Add a bill to your earnings</a>
+        <a href="add_cost.html" class="select">Add a cost</a>
+        <!-- <script src="../node_modules/jquery/dist/jquery.js"></script> -->
+        <script>
+            const fs = require("fs");
+
+            fs.writeFile("test.txt", "Hello World!", (err) => {});
+        </script>
+    </body>
+</html>
