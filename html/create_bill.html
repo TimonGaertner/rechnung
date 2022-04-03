@@ -12,7 +12,7 @@
     </head>
     <body>
         <form action="">
-            <label for="logo">Logo</label>
+            <label for="logo"></label>
             <input type="file" accept="image/png" id="logo" name="logo" />
             <label for="name">Unternehmensbezeichnung</label>
             <input type="text" id="name" name="name" />
@@ -43,21 +43,18 @@
         <script>
             window.$ = window.jQuery = require("jquery");
             const fs = require("fs");
-            $("form").submit((e) => {
-                e.preventDefault();
-                var data = $("form :input").serializeArray();
-                logoPath = $("#logo")[0].files[0].path;
-                fs.copyFile(logoPath, "resources/logo.png", (e) => {});
-                let companyInfoObject = {};
-                for (i of data) {
-                    companyInfoObject[i.name] = i.value
-                }
-                companyInfoObject["kleinunternehmer"] = $("#kleinunternehmer")[0].value=="on" ? true : false
-                const companyInfoJson = JSON.stringify(companyInfoObject);
+            const sqlite = require("sqlite3");
+            const db = new sqlite.Database("db.db");
+            db.run('CREATE TABLE IF NOT EXISTS bills (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, paymentLimit INTEGER, customerName TEXT, customerPLZ TEXT, customerStreet TEXT, kleinunternehmer B
+            db.run('CREATE TABLE IF NOT EXISTS products (billId INTEGER PRIMARY KEY, name TEXT, price INTEGER, quantity INTEGER)');
+            const companyInfoJson = fs.readFileSync('resources/companyInfo.json', 'utf8');
+            const companyInfo = JSON.parse(companyInfoJson);
+            let billInfo = {
+                date: new Date().toLocaleDateString(),
+            }
 
-                fs.writeFile("resources/companyInfo.json", companyInfoJson, ()=>{})
 
-            });
+
         </script>
     </body>
 </html>
