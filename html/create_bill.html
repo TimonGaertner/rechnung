@@ -8,51 +8,68 @@
             content="default-src 'self'; script-src 'self'"
         />
         <title>Rechnung</title>
-        <link rel="stylesheet" href="../style/index.css" />
+        <link rel="stylesheet" href="../style/create_bill.css" />
     </head>
     <body>
-        <form action="">
-            <label for="logo"></label>
-            <input type="file" accept="image/png" id="logo" name="logo" />
-            <label for="name">Unternehmensbezeichnung</label>
-            <input type="text" id="name" name="name" />
-            <label for="street">Straße</label>
-            <input type="text" id="street" name="street" />
-            <label for="zip">PLZ u. Ort</label>
-            <input type="text" id="zip" name="zip" />
-            <label for="tel">Telefon</label>
-            <input type="text" id="tel" name="tel" />
-            <label for="mail">E-Mail</label>
-            <input type="text" id="mail" name="mail" />
-            <label for="iban">IBAN</label>
-            <input type="text" id="iban" name="iban" />
-            <label for="bic">BIC</label>
-            <input type="text" id="bic" name="bic" />
-            <label for="Kontoinhaber">Kontoinhaber</label>
-            <input type="text" id="Kontoinhaber" name="Kontoinhaber" />
-            <label for="bank">Bank</label>
-            <input type="text" id="bank" name="bank" />
-            <label for="kleinunternehmer">Kleinunternehmerregelung</label>
-            <input
-                type="checkbox"
-                id="kleinunternehmer"
-                name="kleinunternehmer"
-            />
-            <input type="submit" value="Speichern" />
+        <h1>Kundeninfos</h1>
+        <form id="customerForm"action="">
+            <label for="customerName">Kundenname</label>
+            <input type="text" id="customerName" name="customerName" />
+            <label for="customerStreet">Kundenadresse (Strasse u. Hausnummer)</label>
+            <input type="text" id="customerStreet" name="customerStreet" />
+            <label for="customerCity">Kundenadresse (Stadt u. PLZ)</label>
+            <input type="text" id="customerCity" name="customerCity" />
+            <input type="submit" value="Kunden abschliessen" />
         </form>
+        <h1>Produkte</h1>
+        <div class="products">
+            
+        </div>
+        <form id="productForm" action="">
+            <label for="productName">Produktname</label>
+            <input type="text" id="productName" name="productName" />
+            <label for="productPrice">Produktpreis</label>
+            <input type="text" id="productPrice" name="productPrice" />
+            <label for="productQuantity">Produktmenge</label>
+            <input type="text" id="productQuantity" name="productQuantity" />
+            <input type="submit" value="Produkt hinzufügen" />
+        </form>
+        <button id="submit">Rechnung erstellen</button>
         <script>
             window.$ = window.jQuery = require("jquery");
             const fs = require("fs");
             const sqlite = require("sqlite3");
             const db = new sqlite.Database("db.db");
-            db.run('CREATE TABLE IF NOT EXISTS bills (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, paymentLimit INTEGER, customerName TEXT, customerPLZ TEXT, customerStreet TEXT, kleinunternehmer B
+            db.run('CREATE TABLE IF NOT EXISTS bills (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, paymentLimit INTEGER, customerName TEXT, customerPLZ TEXT, customerStreet TEXT, kleinunternehmer BOOLEAN)')
             db.run('CREATE TABLE IF NOT EXISTS products (billId INTEGER PRIMARY KEY, name TEXT, price INTEGER, quantity INTEGER)');
             const companyInfoJson = fs.readFileSync('resources/companyInfo.json', 'utf8');
             const companyInfo = JSON.parse(companyInfoJson);
             let billInfo = {
                 date: new Date().toLocaleDateString(),
+                products: []
             }
 
+            $("#customerForm").submit((e) => {
+                e.preventDefault();
+                billInfo.customerName = $("#customerName").val();
+                billInfo.customerStreet = $("#customerStreet").val();
+                billInfo.customerCity = $("#customerCity").val();
+                $("#customerForm").hide();
+                $("#productForm").show();
+            }
+            );
+            $("#productForm").submit((e) => {
+                e.preventDefault();
+                let product ={
+                    name: $("#productName").val(),
+                    price: $("#productPrice").val(),
+                    quantity: $("#productQuantity").val()}
+                billInfo.products.push(product);
+                $(".products").append(`<div class="product"><div class="name">${product.name}</div><div class="price">${product.price}</div><div class="quantity">${product.quantity}</div></div>`)
+                $("#productForm")[0].reset();
+            }
+            );
+            
 
 
         </script>
