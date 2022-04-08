@@ -47,7 +47,7 @@
                 e.preventDefault();
                 var data = $("form :input").serializeArray();
                 logoPath = $("#logo")[0].files[0].path;
-                fs.copyFile(logoPath, "resources/logo.png", (e) => {});
+                fs.copyFileSync(logoPath, "resources/logo.png");
                 let companyInfoObject = {};
                 for (i of data) {
                     companyInfoObject[i.name] = i.value
@@ -55,8 +55,8 @@
                 companyInfoObject["kleinunternehmer"] = $("#kleinunternehmer")[0].value=="on" ? true : false
                 const companyInfoJson = JSON.stringify(companyInfoObject);
 
-                fs.writeFile("resources/companyInfo.json", companyInfoJson, ()=>{})
-
+                fs.writeFileSync("resources/companyInfo.json", companyInfoJson)
+                window.location.href = "index.html";
             });
         </script>
     </body>

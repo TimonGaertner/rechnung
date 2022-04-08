@@ -15,8 +15,15 @@
         <a href="create_bill.html" class="select">Create bill</a>
         <a href="bill_payed.html" class="select">Add a bill to your earnings</a>
         <a href="add_cost.html" class="select">Add a cost</a>
+        <button onclick="clear_all();">clear everything</button>
         <!-- <script src="../node_modules/jquery/dist/jquery.js"></script> -->
         <script>
+            const fs = require("fs")
+            function clear_all(){
+                fs.unlink("resources/companyInfo.json", ()=>{})
+                fs.unlink("resources/logo.png", ()=>{})
+                fs.unlink("resources/db.db", ()=>{})
+            }
         </script>
     </body>
 </html>
