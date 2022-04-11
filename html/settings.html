@@ -11,52 +11,95 @@
         <link rel="stylesheet" href="../style/index.css" />
     </head>
     <body>
+        <a href="index.html" id="back">Zurück</a>
         <form action="">
             <label for="logo">Logo</label>
-            <input type="file" accept="image/png" id="logo" name="logo" />
+            <input type="file" accept="image/png" id="logo" name="logo" /><br />
             <label for="name">Unternehmensbezeichnung</label>
-            <input type="text" id="name" name="name" />
+            <input type="text" id="name" name="name" /><br />
             <label for="street">Straße</label>
-            <input type="text" id="street" name="street" />
-            <label for="zip">PLZ u. Ort</label>
-            <input type="text" id="zip" name="zip" />
+            <input type="text" id="street" name="street" /><br />
+            <label for="city">PLZ u. Ort</label>
+            <input type="text" id="city" name="city" /><br />
             <label for="tel">Telefon</label>
-            <input type="text" id="tel" name="tel" />
+            <input type="text" id="tel" name="tel" /><br />
             <label for="mail">E-Mail</label>
-            <input type="text" id="mail" name="mail" />
+            <input type="text" id="mail" name="mail" /><br />
             <label for="iban">IBAN</label>
-            <input type="text" id="iban" name="iban" />
+            <input type="text" id="iban" name="iban" /><br />
             <label for="bic">BIC</label>
-            <input type="text" id="bic" name="bic" />
+            <input type="text" id="bic" name="bic" /><br />
             <label for="Kontoinhaber">Kontoinhaber</label>
-            <input type="text" id="Kontoinhaber" name="Kontoinhaber" />
+            <input type="text" id="Kontoinhaber" name="Kontoinhaber" /><br />
             <label for="bank">Bank</label>
-            <input type="text" id="bank" name="bank" />
+            <input type="text" id="bank" name="bank" /><br />
+            <label for="tax">Steuernummer</label>
+            <input type="text" id="tax" name="tax" /><br />
             <label for="kleinunternehmer">Kleinunternehmerregelung</label>
             <input
                 type="checkbox"
                 id="kleinunternehmer"
                 name="kleinunternehmer"
-            />
+            /><br />
             <input type="submit" value="Speichern" />
         </form>
         <script>
             window.$ = window.jQuery = require("jquery");
             const fs = require("fs");
+            const imageToBase64 = require("image-to-base64");
+            let logoBase64;
+            try {
+                const companyInfoJson = fs.readFileSync(
+                    "resources/companyInfo.json",
+                    "utf8"
+                );
+                const companyInfo = JSON.parse(companyInfoJson);
+                for (const i of Object.keys(companyInfo)) {
+                    if (i == "kleinunternehmer") {
+                        $("#" + i).prop("checked", companyInfo[i]);
+                    } else if ("logo" == i) {
+
+                    } else {
+                        const value = companyInfo[i];
+                        $("#" + i).val(value);
+                    }
+                }
+            } catch (e) {console.log(e)}
+
             $("form").submit((e) => {
                 e.preventDefault();
                 var data = $("form :input").serializeArray();
+                try{
                 logoPath = $("#logo")[0].files[0].path;
                 fs.copyFileSync(logoPath, "resources/logo.png");
+                }catch(e){}
                 let companyInfoObject = {};
                 for (i of data) {
-                    companyInfoObject[i.name] = i.value
+                    companyInfoObject[i.name] = i.value;
                 }
-                companyInfoObject["kleinunternehmer"] = $("#kleinunternehmer")[0].value=="on" ? true : false
+                companyInfoObject["kleinunternehmer"] =
+                    $("#kleinunternehmer")[0].checked;
+                    try{
+                imageToBase64("resources/logo.png").then((response) => {
+                    companyInfoObject["logo"] = response;
+                
+                    const companyInfoJson = JSON.stringify(companyInfoObject);
+
+                    fs.writeFileSync(
+                        "resources/companyInfo.json",
+                        companyInfoJson
+                    );
+                    window.location.href = "index.html";
+                });
+            } catch(e){
                 const companyInfoJson = JSON.stringify(companyInfoObject);
 
-                fs.writeFileSync("resources/companyInfo.json", companyInfoJson)
-                window.location.href = "index.html";
+                    fs.writeFileSync(
+                        "resources/companyInfo.json",
+                        companyInfoJson
+                    );
+                    window.location.href = "index.html";
+            }
             });
         </script>
     </body>

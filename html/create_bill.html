@@ -11,29 +11,32 @@
         <link rel="stylesheet" href="../style/create_bill.css" />
     </head>
     <body>
-        <h1>Kundeninfos</h1>
+        <a href="index.html" id="back">Zurück</a>
+        <h1>Infos</h1>
         <form id="customerForm" action="">
             <label for="customerName">Kundenname</label>
-            <input type="text" id="customerName" name="customerName" />
+            <input type="text" id="customerName" name="customerName" /><br>
             <label for="customerStreet"
                 >Kundenadresse (Strasse u. Hausnummer)</label
             >
-            <input type="text" id="customerStreet" name="customerStreet" />
+            <input type="text" id="customerStreet" name="customerStreet" /><br>
             <label for="customerCity">Kundenadresse (Stadt u. PLZ)</label>
-            <input type="text" id="customerCity" name="customerCity" />
+            <input type="text" id="customerCity" name="customerCity" /><br>
             <label for="paymentLimit">Zahlungsfrist</label>
-            <input type="text" id="paymentLimit" name="paymentLimit" />
-            <input type="submit" value="Kunden abschliessen" />
+            <input type="text" id="paymentLimit" name="paymentLimit" /><br>
+            <label for="cash">Bar?</label>
+            <input type="checkbox" id="cash" name="cash" />
         </form>
         <h1>Produkte</h1>
         <div class="products"></div>
+        <div class="sum"></div>
         <form id="productForm" action="">
             <label for="productName">Produktname</label>
-            <input type="text" id="productName" name="productName" />
-            <label for="productPrice">Produktpreis</label>
-            <input type="text" id="productPrice" name="productPrice" />
+            <input type="text" id="productName" name="productName" /><br>
+            <label for="productPrice">Produktpreis in €</label>
+            <input type="text" id="productPrice" name="productPrice" /><br>
             <label for="productQuantity">Produktmenge</label>
-            <input type="text" id="productQuantity" name="productQuantity" />
+            <input type="text" id="productQuantity" name="productQuantity" /><br>
             <input type="submit" value="Produkt hinzufügen" />
         </form>
         <button id="submit">Rechnung erstellen</button>
@@ -44,10 +47,10 @@
             const sqlite = require("sqlite3");
             const db = new sqlite.Database("resources/db.db");
             db.run(
-                "CREATE TABLE IF NOT EXISTS bills (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, paymentLimit INTEGER, customerName TEXT, customerPLZ TEXT, customerStreet TEXT, kleinunternehmer BOOLEAN)"
+                "CREATE TABLE IF NOT EXISTS bills (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, paymentLimit INTEGER, customerName TEXT, customerPLZ TEXT, customerStreet TEXT, kleinunternehmer BOOLEAN, cash BOOLEAN, payed BOOLEAN)"
             );
             db.run(
-                "CREATE TABLE IF NOT EXISTS products (billId INTEGER PRIMARY KEY, name TEXT, price INTEGER, quantity INTEGER)"
+                "CREATE TABLE IF NOT EXISTS products (billId INTEGER REFERENCES bills, name TEXT, price INTEGER, quantity INTEGER)"
             );
             const companyInfoJson = fs.readFileSync(
                 "resources/companyInfo.json",
@@ -58,61 +61,97 @@
                 date: new Date().toLocaleDateString(),
                 products: [],
             };
-
-            $("#customerForm").submit((e) => {
+            $("#back").click(function (e) {
                 e.preventDefault();
-                billInfo.customerName = $("#customerName").val();
-                billInfo.customerStreet = $("#customerStreet").val();
-                billInfo.customerCity = $("#customerCity").val();
-                billInfo.paymentLimit = $("#paymentLimit").val();
-                $("#customerForm").hide();
-                $("#productForm").show();
+
+                db.close();
+                window.location.href = "index.html";
             });
             $("#productForm").submit((e) => {
                 e.preventDefault();
-                let product = {
-                    name: $("#productName").val(),
-                    price: $("#productPrice").val(),
-                    quantity: $("#productQuantity").val(),
-                };
-                billInfo.products.push(product);
-                $(".products").append(
-                    `<div class="product"><div class="name">${product.name}</div><div class="price">${product.price}</div><div class="quantity">${product.quantity}</div></div>`
-                );
-                $("#productForm")[0].reset();
+                try {
+                    let product = {
+                        name: $("#productName").val(),
+                        price: parseFloat(
+                            $("#productPrice")
+                                .val()
+                                .toString()
+                                .replace(",", ".")
+                        ),
+                        quantity: parseInt($("#productQuantity").val()),
+                    };
+                    if (isNaN(product.price) || isNaN(product.quantity)) {
+                        throw new Error("Bitte geben Sie eine Zahl ein.");
+                    }
+                    billInfo.products.push(product);
+                    $(".products").append(
+                        `<div class="product"><div class="name">Name: ${
+                            product.name
+                        }</div><div class="price">Preis: ${product.price
+                            .toString()
+                            .replace(
+                                ".",
+                                ","
+                            )}€</div><div class="quantity">Menge: ${
+                            product.quantity
+                        }</div></div>`
+                    );
+                    $(".sum").html(
+                        "Summe: " +
+                            billInfo.products
+                                .reduce((a, b) => a + b.price * b.quantity, 0)
+                                .toString()
+                                .replace(".", ",") +
+                            "€"
+                    );
+                    $("#productForm")[0].reset();
+                } catch (e) {
+                    alert("Bitte alle Felder richtig ausfüllen!");
+                }
             });
             $("#submit").click(async () => {
-                db.run(
-                    "INSERT INTO bills (date, paymentLimit, customerName, customerPLZ, customerStreet, kleinunternehmer) VALUES (?, ?, ?, ?, ?, ?)",
-                    [
-                        billInfo.date,
-                        billInfo.paymentLimit,
-                        billInfo.customerName,
-                        billInfo.customerCity,
-                        billInfo.customerStreet,
-                        companyInfo.kleinunternehmer,
-                    ],
-                    (err) => {
-                        if (err) {
-                            console.log(err);
+                try {
+                    billInfo.customerName = $("#customerName").val();
+                    billInfo.customerStreet = $("#customerStreet").val();
+                    billInfo.customerCity = $("#customerCity").val();
+                    billInfo.paymentLimit = $("#paymentLimit").val();
+                    billInfo.cash = $("#cash").is(":checked");
+                    db.run(
+                        "INSERT INTO bills (date, paymentLimit, customerName, customerPLZ, customerStreet, kleinunternehmer, cash, payed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                        [
+                            billInfo.date,
+                            billInfo.paymentLimit,
+                            billInfo.customerName,
+                            billInfo.customerCity,
+                            billInfo.customerStreet,
+                            companyInfo.kleinunternehmer,
+                            billInfo.cash,
+                            false,
+                        ],
+                        (err) => {
+                            if (err) {
+                                console.log(err);
+                            }
                         }
-                    }
-                );
-                db.each("SELECT last_insert_rowid();", (e, j) => {
-                    billInfo.id = j["last_insert_rowid()"];
-                    billInfo.products.forEach((product) => {
-                        db.run(
-                            "INSERT INTO products (billId, name, price, quantity) VALUES (?, ?, ?, ?)",
-                            [
-                                billInfo.id,
-                                product.name,
-                                product.price,
-                                product.quantity,
-                            ]
-                        );
+                    );
+                    db.each("SELECT last_insert_rowid();", (e, j) => {
+                        billInfo.id = j["last_insert_rowid()"];
+                        billInfo.products.forEach((product) => {
+                            db.run(
+                                "INSERT INTO products (billId, name, price, quantity) VALUES (?, ?, ?, ?)",
+                                [
+                                    billInfo.id,
+                                    product.name,
+                                    product.price,
+                                    product.quantity,
+                                ]
+                            );
+                        });
+                        create_bill(billInfo, companyInfo);
                     });
-                    create_bill(billInfo, companyInfo);
-                });
+                } catch (e) {
+                    alert("Bitte alle Felder richtig ausfüllen!");
+                }
             });
         </script>
     </body>
