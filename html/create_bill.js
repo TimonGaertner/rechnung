@@ -124,6 +124,7 @@ function get_bill_html(billInfo, companyInfo) {
                 <div class="tax">St. -Nr.: ${companyInfo.tax}</div>
                 <div class="tel">Tel: ${companyInfo.tel}</div>
                 <div class="mail">Mail: ${companyInfo.mail}</div>
+                <div class="website">${companyInfo.website}</div>
             </div>
             <div class="bank">
                 <div class="name">Kreditinstitut: ${companyInfo.bank}</div>

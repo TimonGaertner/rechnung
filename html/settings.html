@@ -25,6 +25,8 @@
             <input type="text" id="tel" name="tel" /><br />
             <label for="mail">E-Mail</label>
             <input type="text" id="mail" name="mail" /><br />
+            <label for="website">Website</label>
+            <input type="text" id="website" name="website" /><br />
             <label for="iban">IBAN</label>
             <input type="text" id="iban" name="iban" /><br />
             <label for="bic">BIC</label>
@@ -48,7 +50,7 @@
             const fs = require("fs");
             const imageToBase64 = require("image-to-base64");
             let logoBase64;
-            let companyInfo;
+            let companyInfo={};
             try {
                 const companyInfoJson = fs.readFileSync(
                     "resources/companyInfo.json",
