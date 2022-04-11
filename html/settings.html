@@ -48,12 +48,13 @@
             const fs = require("fs");
             const imageToBase64 = require("image-to-base64");
             let logoBase64;
+            let companyInfo;
             try {
                 const companyInfoJson = fs.readFileSync(
                     "resources/companyInfo.json",
                     "utf8"
                 );
-                const companyInfo = JSON.parse(companyInfoJson);
+                companyInfo = JSON.parse(companyInfoJson);
                 for (const i of Object.keys(companyInfo)) {
                     if (i == "kleinunternehmer") {
                         $("#" + i).prop("checked", companyInfo[i]);
@@ -73,17 +74,16 @@
                 logoPath = $("#logo")[0].files[0].path;
                 fs.copyFileSync(logoPath, "resources/logo.png");
                 }catch(e){}
-                let companyInfoObject = {};
                 for (i of data) {
-                    companyInfoObject[i.name] = i.value;
+                    companyInfo[i.name] = i.value;
                 }
-                companyInfoObject["kleinunternehmer"] =
+                companyInfo["kleinunternehmer"] =
                     $("#kleinunternehmer")[0].checked;
                     try{
                 imageToBase64("resources/logo.png").then((response) => {
-                    companyInfoObject["logo"] = response;
+                    companyInfo["logo"] = response;
                 
-                    const companyInfoJson = JSON.stringify(companyInfoObject);
+                    const companyInfoJson = JSON.stringify(companyInfo);
 
                     fs.writeFileSync(
                         "resources/companyInfo.json",
@@ -92,7 +92,7 @@
                     window.location.href = "index.html";
                 });
             } catch(e){
-                const companyInfoJson = JSON.stringify(companyInfoObject);
+                const companyInfoJson = JSON.stringify(companyInfo);
 
                     fs.writeFileSync(
                         "resources/companyInfo.json",

@@ -204,7 +204,11 @@ function create_bill(billInfo, companyInfo) {
     pdf.create(html, options).toFile(
         "./bills/bill-" + billInfo.id.toString() + ".pdf",
         function (err, res) {
-            if (err) return console.log(err);
+            if (err) {
+                console.log(err);
+            } else {
+                document.querySelector(".confirmation").innerHTML = "Rechnung " + billInfo.id + " erstellt";
+            }
         }
     );
 }
