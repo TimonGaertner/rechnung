@@ -37,7 +37,7 @@
                 location.reload();
                 }
             }
-
+            try{
             const sqlite = require("sqlite3");
             const db = new sqlite.Database("resources/db.db");
             let sales = 0;
@@ -61,6 +61,7 @@
                     );
                 }
             });
+        }catch(e){}
             try {
                         const companyInfoJson = fs.readFileSync(
                             "resources/companyInfo.json",

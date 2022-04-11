@@ -50,7 +50,7 @@
             const fs = require("fs");
             const imageToBase64 = require("image-to-base64");
             let logoBase64;
-            let companyInfo={};
+            let companyInfo = {};
             try {
                 const companyInfoJson = fs.readFileSync(
                     "resources/companyInfo.json",
@@ -61,30 +61,40 @@
                     if (i == "kleinunternehmer") {
                         $("#" + i).prop("checked", companyInfo[i]);
                     } else if ("logo" == i) {
-
                     } else {
                         const value = companyInfo[i];
                         $("#" + i).val(value);
                     }
                 }
-            } catch (e) {console.log(e)}
+            } catch (e) {
+                console.log(e);
+            }
 
             $("form").submit((e) => {
                 e.preventDefault();
                 var data = $("form :input").serializeArray();
-                try{
-                logoPath = $("#logo")[0].files[0].path;
-                fs.copyFileSync(logoPath, "resources/logo.png");
-                }catch(e){}
+                try {
+                    logoPath = $("#logo")[0].files[0].path;
+                    fs.copyFileSync(logoPath, "resources/logo.png");
+                } catch (e) {}
                 for (i of data) {
                     companyInfo[i.name] = i.value;
                 }
                 companyInfo["kleinunternehmer"] =
                     $("#kleinunternehmer")[0].checked;
-                    try{
-                imageToBase64("resources/logo.png").then((response) => {
-                    companyInfo["logo"] = response;
-                
+                try {
+                    imageToBase64("resources/logo.png").then((response) => {
+                        companyInfo["logo"] = response;
+
+                        const companyInfoJson = JSON.stringify(companyInfo);
+
+                        fs.writeFileSync(
+                            "resources/companyInfo.json",
+                            companyInfoJson
+                        );
+                        window.location.href = "index.html";
+                    });
+                } catch (e) {
                     const companyInfoJson = JSON.stringify(companyInfo);
 
                     fs.writeFileSync(
@@ -92,16 +102,7 @@
                         companyInfoJson
                     );
                     window.location.href = "index.html";
-                });
-            } catch(e){
-                const companyInfoJson = JSON.stringify(companyInfo);
-
-                    fs.writeFileSync(
-                        "resources/companyInfo.json",
-                        companyInfoJson
-                    );
-                    window.location.href = "index.html";
-            }
+                }
             });
         </script>
     </body>
