@@ -4,6 +4,8 @@ var pdf = require("html-pdf");
 var options = {
     format: "A4",
     base: "file:///home/timon/code/rechnung/resources/",
+    width: "594px",
+    height: "840px",
 };
 function get_bill_html(billInfo, companyInfo) {
     return `<!DOCTYPE html>

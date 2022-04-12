@@ -50,7 +50,7 @@
                         (err, k) => {
                             if (err) {
                             } else {
-                                sales += k.price;
+                                sales += k.price*k.quantity;
                                 $(".sales").html(
                                     "Umsatz: " +
                                         sales.toString().replace(".", ",") +
