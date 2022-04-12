@@ -2,7 +2,7 @@ require("html-pdf");
 var pdf = require("html-pdf");
 
 var options = {
-    format: "A4",
+    format: "Letter",
     base: "file:///home/timon/code/rechnung/resources/",
     width: "594px",
     height: "840px",
@@ -17,9 +17,10 @@ function get_bill_html(billInfo, companyInfo) {
         </head>
         <body>
             <div class="right">
-                <img src="data:image/png;base64, ${
-                    companyInfo.logo
-                }" alt="" id="logo" />
+            
+            <img src="data:image/png;base64, ${
+                companyInfo.logo
+            }" alt="" id="logo" />
             </div>
             <div class="customer">
                 ${
@@ -141,20 +142,22 @@ function get_bill_html(billInfo, companyInfo) {
                 body {
                     margin: 0;
                     padding: 0;
+                    font-size:  6.5vw;
                     font-family: Arial, Helvetica, sans-serif;
-                    min-height:72em!important;
+                    min-height:65em!important;
                     margin: 10% 10%;
                 }
+
                 .right {
                     width: 100%;
-                    display: flex;
-                    justify-content: flex-end;
+                    display: -webkit-flex;
+                    -webkit-justify-content: flex-end;
                 }
                 #logo {
                     width: 20%;
                 }
                 .sum {
-                    font-size: 1.2rem;
+                    font-size: 1.3em;
                 }
                 .table {
                     text-align: left;
@@ -166,13 +169,14 @@ function get_bill_html(billInfo, companyInfo) {
                 }
                 .signatureField{
                     border: 1px solid black;
-                    height: 6em;
+                    height: 3em;
                     width: 40%;
+                font-size: 2em;
                 }
                 .flex-col{
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-end;
+                    display: -webkit-flex;
+                    -webkit-flex-direction: column;
+                    -webkit-align-items: flex-end;
                 }
                 .flex-col p{
                     width: 50%;
@@ -194,8 +198,8 @@ function get_bill_html(billInfo, companyInfo) {
     position: absolute;
     bottom: 0;
     width: 80%;
-    display: flex;
-    justify-content: space-between;
+    display: -webkit-flex;
+    -webkit-justify-content: space-between;
 }
             </style>
         </body>
@@ -210,7 +214,8 @@ function create_bill(billInfo, companyInfo) {
             if (err) {
                 console.log(err);
             } else {
-                document.querySelector(".confirmation").innerHTML = "Rechnung " + billInfo.id + " erstellt";
+                document.querySelector(".confirmation").innerHTML =
+                    "Rechnung " + billInfo.id + " erstellt";
             }
         }
     );
