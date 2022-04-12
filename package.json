@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "electron": "13.3",
+    "electron-packager": "^15.4.0",
     "fs": "^0.0.1-security",
     "html-pdf": "^3.0.1",
     "image-to-base64": "^2.2.0",

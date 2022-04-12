@@ -25,7 +25,7 @@
             window.$ = window.jQuery = require("jquery");
             const {shell} = require('electron')
             function openBillsFolder(){
-                shell.openPath('./bills')
+                shell.openPath(__dirname.replace("resources\\app\\html", "bills"))
             }
             const fs = require("fs");
             function clear_all() {
@@ -39,6 +39,9 @@
             }
             try{
             const sqlite = require("sqlite3");
+            if (!fs.existsSync("./resources/")){
+                fs.mkdirSync("./resources/");
+            }
             const db = new sqlite.Database("resources/db.db");
             let sales = 0;
             db.each("SELECT * FROM bills WHERE payed = 1", (e, j) => {
