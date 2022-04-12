@@ -25,7 +25,7 @@
             window.$ = window.jQuery = require("jquery");
             const {shell} = require('electron')
             function openBillsFolder(){
-                shell.openPath(__dirname+'/../bills')
+                shell.openPath(__dirname.replace("resources\\app\\html", "bills"))
             }
             const fs = require("fs");
             function clear_all() {
