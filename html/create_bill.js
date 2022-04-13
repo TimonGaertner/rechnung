@@ -1,11 +1,9 @@
 require("html-pdf");
 var pdf = require("html-pdf");
-
+screenheight = screen.width/2.5;
 var options = {
     format: "A4",
     base: "file:///home/timon/code/rechnung/resources/",
-    width: "594px",
-    height: "840px",
 };
 function get_bill_html(billInfo, companyInfo) {
     return `<!DOCTYPE html>
@@ -141,6 +139,7 @@ function get_bill_html(billInfo, companyInfo) {
                 body {
                     margin: 0;
                     padding: 0;
+                    font-size: ${screen.width/120}px;
                     font-family: Arial, Helvetica, sans-serif;
                     min-height:72em!important;
                     margin: 10% 10%;
@@ -154,7 +153,7 @@ function get_bill_html(billInfo, companyInfo) {
                     width: 20%;
                 }
                 .sum {
-                    font-size: 1.2rem;
+                    font-size: 1.2em;
                 }
                 .table {
                     text-align: left;
