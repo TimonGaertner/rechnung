@@ -1,8 +1,8 @@
 require("html-pdf");
 var pdf = require("html-pdf");
-
+screenheight = screen.width/2.5;
 var options = {
-    format: "Letter",
+    format: "A4",
     base: "file:///home/timon/code/rechnung/resources/",
 };
 function get_bill_html(billInfo, companyInfo) {
@@ -15,10 +15,9 @@ function get_bill_html(billInfo, companyInfo) {
         </head>
         <body>
             <div class="right">
-            
-            <img src="data:image/png;base64, ${
-                companyInfo.logo
-            }" alt="" id="logo" />
+                <img src="data:image/png;base64, ${
+                    companyInfo.logo
+                }" alt="" id="logo" />
             </div>
             <div class="customer">
                 ${
@@ -140,12 +139,11 @@ function get_bill_html(billInfo, companyInfo) {
                 body {
                     margin: 0;
                     padding: 0;
-                    font-size:  6.5vw;
+                    font-size: ${screen.width/120*(screen.logicalXDPI**1.15)}px;
                     font-family: Arial, Helvetica, sans-serif;
-                    min-height:65em!important;
+                    min-height:72em!important;
                     margin: 10% 10%;
                 }
-
                 .right {
                     width: 100%;
                     display: -webkit-flex;
@@ -155,7 +153,7 @@ function get_bill_html(billInfo, companyInfo) {
                     width: 20%;
                 }
                 .sum {
-                    font-size: 1.3em;
+                    font-size: 1.2em;
                 }
                 .table {
                     text-align: left;
@@ -167,9 +165,8 @@ function get_bill_html(billInfo, companyInfo) {
                 }
                 .signatureField{
                     border: 1px solid black;
-                    height: 3em;
+                    height: 6em;
                     width: 40%;
-                font-size: 2em;
                 }
                 .flex-col{
                     display: -webkit-flex;
@@ -212,8 +209,7 @@ function create_bill(billInfo, companyInfo) {
             if (err) {
                 console.log(err);
             } else {
-                document.querySelector(".confirmation").innerHTML =
-                    "Rechnung " + billInfo.id + " erstellt";
+                document.querySelector(".confirmation").innerHTML = "Rechnung " + billInfo.id + " erstellt";
             }
         }
     );
