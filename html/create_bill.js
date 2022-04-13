@@ -139,7 +139,7 @@ function get_bill_html(billInfo, companyInfo) {
                 body {
                     margin: 0;
                     padding: 0;
-                    font-size: ${screen.width/120*(screen.logicalXDPI**1.15)}px;
+                    font-size: ${screen.width/120*(window.devicePixelRatio**1.15)}px;
                     font-family: Arial, Helvetica, sans-serif;
                     min-height:72em!important;
                     margin: 10% 10%;
