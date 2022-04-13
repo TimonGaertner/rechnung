@@ -146,7 +146,7 @@ function get_bill_html(billInfo, companyInfo) {
                 }
                 .right {
                     width: 100%;
-                    display: flex;
+                    display: -webkit-flex;
                     justify-content: flex-end;
                 }
                 #logo {
