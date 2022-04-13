@@ -147,7 +147,7 @@ function get_bill_html(billInfo, companyInfo) {
                 .right {
                     width: 100%;
                     display: -webkit-flex;
-                    justify-content: flex-end;
+                    -webkit-justify-content: flex-end;
                 }
                 #logo {
                     width: 20%;
@@ -169,9 +169,9 @@ function get_bill_html(billInfo, companyInfo) {
                     width: 40%;
                 }
                 .flex-col{
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-end;
+                    display: -webkit-flex;
+                    -webkit-flex-direction: column;
+                    -webkit-align-items: flex-end;
                 }
                 .flex-col p{
                     width: 50%;
@@ -193,8 +193,8 @@ function get_bill_html(billInfo, companyInfo) {
     position: absolute;
     bottom: 0;
     width: 80%;
-    display: flex;
-    justify-content: space-between;
+    display: -webkit-flex;
+    -webkit-justify-content: space-between;
 }
             </style>
         </body>
